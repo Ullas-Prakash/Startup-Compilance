@@ -1,4 +1,5 @@
 import React from 'react';
+import { useEffect } from "react";
 
 const actions = [
   { id: 1, title: 'Privacy Policy', desc: 'Add a clear privacy policy describing data processing and retention.', status: 'Needed' },
@@ -9,6 +10,15 @@ const actions = [
 
 export default function Dashboard() {
   // Placeholder static risk score; in a real app this would be computed
+
+  //test during frontend-backend linking
+  useEffect(() => {
+    fetch("http://localhost:8000/api/health")
+      .then(res => res.json())
+      .then(data => console.log("Backend says:", data))
+      .catch(err => console.error(err));
+  }, []);
+
   const score = 68; // out of 100
   const riskLevel = score >= 75 ? 'High' : score >= 40 ? 'Medium' : 'Low';
 
