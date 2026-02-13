@@ -3,9 +3,14 @@ import { useNavigate, Link } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck, Github, Chrome } from "lucide-react";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider, githubProvider } from "../firebase";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -28,7 +33,13 @@ export default function Login() {
     try {
       const result = await signInWithPopup(auth, provider);
       console.log(`${providerName} login successful:`, result.user);
-      navigate("/dashboard");
+      login({
+        name: result.user.displayName,
+        email: result.user.email
+      });
+
+      navigate("/");
+
     } catch (error) {
       console.error(`${providerName} login error:`, error);
       if (error.code === "auth/popup-closed-by-user") {
@@ -41,18 +52,41 @@ export default function Login() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
     setIsLoading(true);
-    // Simulate legacy email/password API call
-    setTimeout(() => {
-      console.log({ email, password });
+    setErrors({});
+
+    try {
+      const res = await fetch("http://localhost:8000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+       },
+       body: JSON.stringify({ email, password })
+     });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Login failed");
+      }
+
+    // Store user in global context
+      login(data.user);
+
+    // Redirect to Home
+      navigate("/");
+
+    } catch (error) {
+      setErrors({ email: error.message });
+    } finally {
       setIsLoading(false);
-      navigate("/dashboard");
-    }, 1500);
+    }
   };
+
 
   return (
     <div className="min-h-screen bg-[#030712] flex items-center justify-center p-4 relative overflow-hidden font-sans selection:bg-purple-500/30">

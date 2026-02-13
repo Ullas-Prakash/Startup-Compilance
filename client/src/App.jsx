@@ -12,6 +12,7 @@ import Result from './pages/Result'
 import Navbar from './pages/Navbar'
 import About from './pages/About'
 import Contact from './pages/Contact'
+import ProtectedRoute from "./pages/ProtectedRoute";
 
 
 export default function App() {
@@ -19,13 +20,17 @@ export default function App() {
     <BrowserRouter> 
       <Navbar />
       <Routes>  
-        <Route path="/" element={<Home />} />
+        <Route path="/dashboard" element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>} />
+        <Route path="/home" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/onboarding" element={<Onboarding />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        
         <Route path="/result" element={<Result />} />
         {/* default: open dashboard automatically */}
         <Route path="/" element={<Navigate to="/home" replace />} />

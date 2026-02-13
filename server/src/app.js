@@ -21,7 +21,7 @@ const healthRoutes = require("./routes/healthRoutes");
 app.use("/api", healthRoutes);
 
 const authRoutes = require("./routes/authRoutes");
-app.use("/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 
 const assessmentRoutes = require("./routes/assessmentRoutes");
 app.use("/assessment", assessmentRoutes);
