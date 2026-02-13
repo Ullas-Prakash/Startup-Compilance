@@ -14,6 +14,8 @@ export default function Navbar() {
 
         <div className="space-x-6 text-sm font-medium">
           <Link to="/">Home</Link>
+          <Link to="/About">About</Link>
+          <Link to="/Contact">Contact</Link>
           <Link to="/dashboard">Dashboard</Link>
 
           {!user ? (
